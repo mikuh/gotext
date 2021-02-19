@@ -49,6 +49,23 @@ func TestTrieFind(t *testing.T) {
 	}
 }
 
+func TestMultiReplace(t *testing.T){
+	trie := New()
+
+	trie.Add("清华大学", []string{"清华大学","北大","浙大","中科大"})
+	trie.Add("春节", []string{"春节","中秋","国庆","清明"})
+
+	a := trie.MultiReplace("我考上了清华,所以在清华大学打游戏春节不回家")
+
+	if len(a) != 16{
+		t.Errorf("Expected ok to be false")
+	}
+
+	if a[0] != "我考上了清华,所以在中科打游游游戏清明不回家"{
+		t.Errorf("Expected ok to be false")
+	}
+}
+
 func TestTrieFindMissingWithSubtree(t *testing.T) {
 	trie := New()
 	trie.Add("fooish", 1)
@@ -396,5 +413,16 @@ func BenchmarkAddRemove(b *testing.B) {
 		for k := range words {
 			trie.Remove(words[k])
 		}
+	}
+}
+
+func BenchmarkReplace(b *testing.B) {
+	trie := New()
+
+	trie.Add("清华大学", []string{"北大", "浙大", "中科大"})
+	trie.Add("春节", []string{"中秋", "国庆", "清明"})
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		trie.MultiReplace("我在清华大学上学春节不回家")
 	}
 }

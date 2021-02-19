@@ -6,14 +6,14 @@ import (
 )
 
 type Node struct {
-	val rune
-	path string
-	term bool
-	depth int
-	meta interface{}
-	mask uint64
-	parent *Node
-	children map[rune]*Node
+	val       rune
+	path      string
+	term      bool
+	depth     int
+	meta      interface{}
+	mask      uint64
+	parent    *Node
+	children  map[rune]*Node
 	termCount int
 }
 
@@ -31,7 +31,6 @@ func (a ByKeys) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
 func (a ByKeys) Less(i, j int) bool { return len(a[i]) < len(a[j]) }
 
 const nul = 0x0
-
 
 // New a Trie with an initialized root Node.
 func New() *Trie {
@@ -89,6 +88,77 @@ func (t *Trie) Find(key string) (*Node, bool) {
 	}
 
 	return node, true
+}
+
+func (t *Trie) MultiReplace(text string) []string {
+	var word []rune
+	var words [][]rune
+	var res []string
+	var chars = []rune(text)
+	var size = len(chars)
+	var start = -1
+	var parent = t.Root()
+	words = append(words, word)
+	for i := 0; i < size; i++ {
+		child, ok := parent.Children()[chars[i]]
+		if !ok {
+			for k := 0; k < len(words); k++ {
+				words[k] = append(words[k], chars[i])
+			}
+			continue
+		}
+		if start < 0 {
+			start = i
+		}
+		end := -1
+		node, ok := child.Children()[nul]
+		if ok && node.term {
+			end = i + 1
+		}
+
+		var j = i + 1
+		for ; j < size; j++ {
+			grandchild, ok := child.Children()[chars[j]]
+			if !ok {
+				break
+			}
+			child = grandchild
+
+			node, ok := child.Children()[nul]
+			if ok && node.term {
+				end = j + 1
+				i = j
+			}
+		}
+		if end > 0 {
+			i = j - 1
+			var _words [][]rune
+			num := 0
+			for _, word := range words {
+				for _, v := range child.Children()[nul].Meta().([]string) {
+					_words = append(_words, word)
+					_v := []rune(v)
+					
+					for _, ch := range _v {
+						_words[num] = append(_words[num], ch)
+					}
+					num++
+				}
+			}
+			words = _words
+
+		} else {
+			for k := 0; k < len(words); k++ {
+				words[k] = append(words[k], chars[i])
+			}
+		}
+		start = -1
+	}
+	for _, v := range words {
+		res = append(res, string(v))
+	}
+
+	return res
 }
 
 func (t *Trie) HasKeysWithPrefix(key string) bool {
