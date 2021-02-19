@@ -54,14 +54,15 @@ func TestMultiReplace(t *testing.T){
 
 	trie.Add("清华大学", []string{"清华大学","北大","浙大","中科大"})
 	trie.Add("春节", []string{"春节","中秋","国庆","清明"})
+	trie.Add("清华", []string{"清华", "复旦","交大"})
 
 	a := trie.MultiReplace("我考上了清华,所以在清华大学打游戏春节不回家")
 
-	if len(a) != 16{
+	if len(a) != 48{
 		t.Errorf("Expected ok to be false")
 	}
 
-	if a[0] != "我考上了清华,所以在中科打游游游戏清明不回家"{
+	if a[0] != "我考上了清华,所以在清华大学打游戏春节不回家"{
 		t.Errorf("Expected ok to be false")
 	}
 }

@@ -102,7 +102,7 @@ func (t *Trie) MultiReplace(text string) []string {
 	for i := 0; i < size; i++ {
 		child, ok := parent.Children()[chars[i]]
 		if !ok {
-			for k := 0; k < len(words); k++ {
+			for k, _:= range words {
 				words[k] = append(words[k], chars[i])
 			}
 			continue
@@ -136,11 +136,14 @@ func (t *Trie) MultiReplace(text string) []string {
 			num := 0
 			for _, word := range words {
 				for _, v := range child.Children()[nul].Meta().([]string) {
-					_words = append(_words, word)
+					_word := make([]rune, len(word))
+					copy(_word, word)
+					_words = append(_words, _word)
 					_v := []rune(v)
 					
 					for _, ch := range _v {
 						_words[num] = append(_words[num], ch)
+						
 					}
 					num++
 				}
