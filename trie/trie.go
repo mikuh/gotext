@@ -158,7 +158,11 @@ func (t *Trie) MultiReplace(text string) []string {
 		start = -1
 	}
 	for _, v := range words {
-		res = append(res, string(v))
+		sv := string(v)
+		if sv == text{
+			continue
+		}
+		res = append(res, sv)
 	}
 
 	return res
