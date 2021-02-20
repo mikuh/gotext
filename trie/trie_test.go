@@ -58,13 +58,10 @@ func TestMultiReplace(t *testing.T){
 
 	a := trie.MultiReplace("我考上了清华,所以在清华大学打游戏春节不回家")
 
-	if len(a) != 48{
+	if len(a) != 47{
 		t.Errorf("Expected ok to be false")
 	}
 
-	if a[0] != "我考上了清华,所以在清华大学打游戏春节不回家"{
-		t.Errorf("Expected ok to be false")
-	}
 }
 
 func TestTrieFindMissingWithSubtree(t *testing.T) {
