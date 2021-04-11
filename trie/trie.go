@@ -24,6 +24,14 @@ type Trie struct {
 	size int
 }
 
+// MatchWord struct
+type MatchWord struct{
+	word string
+	class string
+	start int
+	end int
+}
+
 type ByKeys []string
 
 func (a ByKeys) Len() int           { return len(a) }
@@ -90,6 +98,35 @@ func (t *Trie) Find(key string) (*Node, bool) {
 	return node, true
 }
 
+// ExtractKeyWords keyword,type and index from string
+func (t *Trie) ExtractKeyWords(text string) []MatchWord{
+	var match_words []MatchWord
+	chars := []rune(text)
+	size := len(chars)
+	parent := t.Root()
+	for start:=0; start < size;{
+		for end:=start; end < size; end++{
+			child, ok := parent.Children()[chars[end]]
+			if !ok{
+				break
+			}else{
+				node, ok := child.Children()[nul]
+				if ok && node.term{
+					match_words = append(match_words, MatchWord{string(chars[start:end+1]), node.Meta().(string), start, end})
+					start = end + 1
+					break
+				}else{
+					parent = child
+				}
+			}
+		}
+		parent = t.Root()
+		start++
+	}
+	return match_words
+}
+
+// Replece keywords to target words
 func (t *Trie) MultiReplace(text string) []string {
 	var word []rune
 	var words [][]rune

@@ -6,6 +6,7 @@ import (
 	"os"
 	"sort"
 	"testing"
+	"fmt"
 )
 
 func addFromFile(t *Trie, path string) {
@@ -47,6 +48,20 @@ func TestTrieFind(t *testing.T) {
 	if n.Meta().(int) != 1 {
 		t.Errorf("Expected 1, got: %d", n.Meta().(int))
 	}
+}
+
+func TestExtractKeyWords(t *testing.T){
+	trie := New()
+
+	trie.Add("习近平", "Politics")
+	trie.Add("shabi", "Abuse")
+	trie.Add("a片", "Porn")
+
+	a := trie.ExtractKeyWords("习近平我爱你，草死那些看a片的shabi")
+	
+	fmt.Println(a)
+
+
 }
 
 func TestMultiReplace(t *testing.T){
